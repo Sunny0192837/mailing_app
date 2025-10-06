@@ -1,0 +1,41 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Шаблоны сообщений</h2>
+    <a href="{% url 'mailing:message_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Создать сообщение
+    </a>
+</div>
+
+<div class="row">
+    {% for message in messages %}
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">{{ message.subject }}</h5>
+                <div class="btn-group">
+                    <a href="{% url 'mailing:message_update' message.pk %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-edit"></i> Изменить
+                    </a>
+                    <a href="{% url 'mailing:message_delete' message.pk %}" class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-trash"></i> Удалить
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ message.body|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <h5>Сообщения не найдены</h5>
+            <p>Создайте шаблон сообщения для использования в рассылках</p>
+            <a href="{% url 'mailing:message_create' %}" class="btn btn-primary">Создать сообщение</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

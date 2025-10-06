@@ -1,0 +1,59 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Удаление рассылки
+                </h4>
+            </div>
+
+            <div class="card-body text-center">
+                <div class="text-danger mb-3">
+                    <i class="fas fa-trash-alt fa-3x"></i>
+                </div>
+
+                <h5>Вы уверены, что хотите удалить рассылку?</h5>
+
+                <div class="card border-warning mt-3">
+                    <div class="card-body text-start">
+                        <h6 class="card-title">{{ object.message.subject }}</h6>
+                        <p class="mb-1"><strong>Статус:</strong>
+                            <span class="badge
+                                {% if object.status == 'created' %}bg-secondary
+                                {% elif object.status == 'started' %}bg-success
+                                {% else %}bg-dark{% endif %}">
+                                {{ object.get_status_display }}
+                            </span>
+                        </p>
+                        <p class="mb-1"><strong>Получателей:</strong> {{ object.clients.count }}</p>
+                        <p class="mb-0"><strong>Попыток отправки:</strong> {{ object.attempts.count }}</p>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Это действие нельзя отменить. Все данные о рассылке будут удалены.
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-trash me-2"></i>
+                            Да, удалить рассылку
+                        </button>
+                        <a href="{% url 'mailing:mailing_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>
+                            Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="fas {% if object %}fa-edit{% else %}fa-plus{% endif %} me-2"></i>
+                    {% if object %}Редактирование рассылки{% else %}Новая рассылка{% endif %}
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Сообщение</label>
+                        {{ form.message }}
+                        {% if form.message.errors %}
+                        <div class="text-danger small mt-1">{{ form.message.errors.0 }}</div>
+                        {% endif %}
+                        <div class="form-text">
+                            <a href="{% url 'mailing:message_create' %}" target="_blank">Создать новое сообщение</a>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Получатели</label>
+                        {{ form.clients }}
+                        {% if form.clients.errors %}
+                        <div class="text-danger small mt-1">{{ form.clients.errors.0 }}</div>
+                        {% endif %}
+                        <div class="form-text">
+                            Удерживайте Ctrl для выбора нескольких получателей.
+                            <a href="{% url 'mailing:client_create' %}" target="_blank">Добавить клиента</a>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary">
+                            Отмена
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-1"></i>
+                            {% if object %}Сохранить{% else %}Создать{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
