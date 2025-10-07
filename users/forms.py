@@ -39,13 +39,11 @@ class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Обновление атрибутов для email
         email_field = self.fields.get("email")
         email_field.widget.attrs.update(
             {"placeholder": "Адрес электронной почты", "class": "form-control"}
         )
 
-        # Обновление атрибутов для паролей
         password1_field = self.fields.get("password1")
         password1_field.widget.attrs.update(
             {"placeholder": "Введите сложный пароль", "class": "form-control"}
@@ -56,6 +54,29 @@ class UserRegisterForm(UserCreationForm):
             {"placeholder": "Введите пароль еще раз", "class": "form-control"}
         )
 
-        # Удаление help_text
         for field in self.fields.values():
             field.help_text = None
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("email", "phone_number", "country", "image")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Настройка полей формы
+        self.fields["email"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Электронная почта"}
+        )
+
+        self.fields["phone_number"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Номер телефона"}
+        )
+
+        self.fields["country"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Страна"}
+        )
+
+        self.fields["image"].widget.attrs.update({"class": "form-control"})

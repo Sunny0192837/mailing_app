@@ -8,11 +8,23 @@ class Client(models.Model):
     Модель получателя рассылки.
     """
 
-    email = models.EmailField(unique=True, verbose_name="почта получателя рассылки")
-    full_name = models.CharField(max_length=255, verbose_name="фио получателя рассылки")
-    comment = models.TextField(blank=True, verbose_name="комментарий", max_length=3000)
+    email = models.EmailField(
+        unique=True,
+        verbose_name="почта получателя рассылки"
+    )
+    full_name = models.CharField(
+        max_length=255,
+        verbose_name="фио получателя рассылки"
+    )
+    comment = models.TextField(
+        blank=True,
+        verbose_name="комментарий",
+        max_length=3000
+    )
     owner = models.ForeignKey(
-        "users.User", on_delete=models.CASCADE, verbose_name="владелец"
+        "users.User",
+        on_delete=models.CASCADE,
+        verbose_name="владелец"
     )
 
     def __str__(self):
@@ -28,10 +40,18 @@ class Message(models.Model):
     Модель сообщения
     """
 
-    subject = models.CharField(max_length=255, verbose_name="тема сообщения")
-    body = models.TextField(max_length=4000, verbose_name="текст сообщения")
+    subject = models.CharField(
+        max_length=255,
+        verbose_name="тема сообщения"
+    )
+    body = models.TextField(
+        max_length=4000,
+        verbose_name="текст сообщения"
+    )
     owner = models.ForeignKey(
-        "users.User", on_delete=models.CASCADE, verbose_name="владелец"
+        "users.User",
+        on_delete=models.CASCADE,
+        verbose_name="владелец"
     )
 
     def __str__(self):
@@ -57,8 +77,14 @@ class Mailing(models.Model):
         (STATUS_COMPLETED, "Завершена"),
     ]
 
-    start_time = models.DateTimeField(blank=True, null=True)
-    end_time = models.DateTimeField(blank=True, null=True)
+    start_time = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+    end_time = models.DateTimeField(
+        blank=True,
+        null=True
+    )
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -66,13 +92,18 @@ class Mailing(models.Model):
         verbose_name="статус рассылки",
     )
     message = models.ForeignKey(
-        "mailing.Message", on_delete=models.CASCADE, verbose_name="сообщение"
+        "mailing.Message",
+        on_delete=models.CASCADE,
+        verbose_name="сообщение"
     )
     clients = models.ManyToManyField(
-        "mailing.Client", verbose_name="получатели рассылки"
+        "mailing.Client",
+        verbose_name="получатели рассылки"
     )
     owner = models.ForeignKey(
-        "users.User", on_delete=models.CASCADE, verbose_name="владелец"
+        "users.User",
+        on_delete=models.CASCADE,
+        verbose_name="владелец"
     )
 
     def __str__(self):
@@ -85,6 +116,7 @@ class Mailing(models.Model):
             return False
 
         self.start_time = timezone.now()
+        self.save()
 
         successful_sends = 0
         for client in self.clients.all():
@@ -97,6 +129,7 @@ class Mailing(models.Model):
                     recipient_list=[client.email],
                     fail_silently=False,
                 )
+                attempt.recipient = client.email
                 attempt.status = MailingAttempt.STATUS_SUCCESS
                 attempt.server_response = "Успешно отправлено"
                 successful_sends += 1
@@ -129,8 +162,12 @@ class MailingAttempt(models.Model):
         (STATUS_FAILURE, "Не успешно"),
     ]
 
+    recipient = models.CharField(max_length=255)
     attempt_time = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES
+    )
     server_response = models.TextField(blank=True)
     mailing = models.ForeignKey(
         "mailing.Mailing", on_delete=models.CASCADE, related_name="attempts"

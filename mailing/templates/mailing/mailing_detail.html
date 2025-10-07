@@ -65,7 +65,9 @@
                     {% for attempt in attempts %}
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                         <div>
+                            <div>{{ attempt.recipient }}</div>
                             <div>{{ attempt.attempt_time|date:"d.m.Y H:i" }}</div>
+
                             <small class="text-muted">{{ attempt.server_response|default:"-" }}</small>
                         </div>
                         <span class="badge 
@@ -80,11 +82,12 @@
                 {% endif %}
             </div>
         </div>
-
+        {% if not user.groups.all.0.name == 'Managers' %}
         <div class="d-flex gap-2 mt-3">
             <a href="{% url 'mailing:mailing_update' mailing.pk %}" class="btn btn-primary">Редактировать</a>
             <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-outline-danger">Удалить</a>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

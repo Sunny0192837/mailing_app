@@ -1,0 +1,78 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<body>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card profile-card">
+                    <div class="card-header bg-white text-center py-4">
+                        <h2 class="card-title mb-0">Профиль пользователя</h2>
+                    </div>
+                    <a href="{% url 'users:profile_edit' %}" class="btn btn-primary btn-sm">
+                        Редактировать профиль
+                    </a>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4">
+                                {% if user.image %}
+                                    <img src="{{ user.image.url }}" alt="Аватар" class="avatar img-fluid mb-3">
+                                {% else %}
+                                    <div class="avatar bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3">
+                                        <span class="text-white fs-1">{{ user.email|first|upper }}</span>
+                                    </div>
+                                {% endif %}
+                                <h4>{{ user.email }}</h4>
+                                <span class="badge {% if user.is_active %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if user.is_active %}Активен{% else %}Неактивен{% endif %}
+                                </span>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="info-item">
+                                    <strong>Электронная почта:</strong>
+                                    <p class="mb-0">{{ user.email }}</p>
+                                </div>
+
+                                {% if user.phone_number %}
+                                <div class="info-item">
+                                    <strong>Телефон:</strong>
+                                    <p class="mb-0">{{ user.phone_number }}</p>
+                                </div>
+                                {% endif %}
+
+                                {% if user.country %}
+                                <div class="info-item">
+                                    <strong>Страна:</strong>
+                                    <p class="mb-0">{{ user.country }}</p>
+                                </div>
+                                {% endif %}
+
+                                {% if not user.groups.all.count == 0 %}
+                                <div class="info-item">
+                                    <strong>Группы:</strong>
+                                {% for group in user.groups.all %}
+                                    <p class="mb-0">- {{ group.name }}</p>
+                                {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="info-item">
+                                    <strong>Дата регистрации:</strong>
+                                    <p class="mb-0">{{ user.date_joined|date:"d.m.Y H:i" }}</p>
+                                </div>
+
+                                <div class="info-item">
+                                    <strong>Последний вход:</strong>
+                                    <p class="mb-0">{{ user.last_login|date:"d.m.Y H:i" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
