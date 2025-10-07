@@ -1,0 +1,93 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Рассылка #{{ mailing.id }}</h3>
+            <a href="{% url 'mailing:mailing_list' %}" class="btn btn-outline-secondary">← Назад</a>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">{{ mailing.message.subject }}</h5>
+                        <span class="badge 
+                            {% if mailing.status == 'created' %}bg-secondary
+                            {% elif mailing.status == 'started' %}bg-success
+                            {% else %}bg-dark{% endif %}">
+                            {{ mailing.get_status_display }}
+                        </span>
+                    </div>
+                    {% if mailing.status == 'created' %}
+                    <form method="post" action="{% url 'mailing:mailing_start' mailing.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm">Запустить</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6>Детали рассылки</h6>
+                <p><strong>Старт рассылки:</strong> {{ mailing.start_time|date:"d.m.Y H:i" }}</p>
+                <p><strong>Завершение рассылки:</strong> {{ mailing.end_time|date:"d.m.Y H:i" }}</p>
+                <p><strong>Получателей:</strong> {{ mailing.clients.count }}</p>
+                
+                <div class="mt-3">
+                    <strong>Текст сообщения:</strong>
+                    <div class="border rounded p-3 mt-1 bg-light">
+                        {{ mailing.message.body|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6>Получатели</h6>
+                {% for client in mailing.clients.all %}
+                <div class="border-bottom pb-2 mb-2">
+                    <div class="fw-bold">{{ client.full_name }}</div>
+                    <div class="text-muted small">{{ client.email }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h6>История отправок</h6>
+                {% if attempts %}
+                    {% for attempt in attempts %}
+                    <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                        <div>
+                            <div>{{ attempt.recipient }}</div>
+                            <div>{{ attempt.attempt_time|date:"d.m.Y H:i" }}</div>
+
+                            <small class="text-muted">{{ attempt.server_response|default:"-" }}</small>
+                        </div>
+                        <span class="badge 
+                            {% if attempt.status == 'success' %}bg-success
+                            {% else %}bg-danger{% endif %}">
+                            {{ attempt.get_status_display }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Нет данных об отправках</p>
+                {% endif %}
+            </div>
+        </div>
+        {% if not user.groups.all.0.name == 'Managers' %}
+        <div class="d-flex gap-2 mt-3">
+            <a href="{% url 'mailing:mailing_update' mailing.pk %}" class="btn btn-primary">Редактировать</a>
+            <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-outline-danger">Удалить</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body text-center py-4">
+                <div class="text-danger mb-3">
+                    <i class="fas fa-exclamation-circle fa-4x"></i>
+                </div>
+
+                <h4 class="card-title mb-3">Удалить клиента?</h4>
+
+                <div class="card border-light mb-4">
+                    <div class="card-body">
+                        <h6 class="mb-1">{{ object.full_name }}</h6>
+                        <p class="text-muted mb-2">{{ object.email }}</p>
+                        {% if object.comment %}
+                        <p class="small text-muted">{{ object.comment|truncatewords:10 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <p class="text-muted mb-4">
+                    Это действие нельзя отменить. Клиент будет удален из системы.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-trash me-2"></i>
+                            Удалить клиента
+                        </button>
+                        <a href="{% url 'mailing:client_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>
+                            Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

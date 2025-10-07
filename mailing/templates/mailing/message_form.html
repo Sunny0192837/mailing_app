@@ -1,0 +1,81 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">
+                        <i class="fas {% if object %}fa-edit{% else %}fa-plus-circle{% endif %} me-2"></i>
+                        {% if object %}Редактирование сообщения{% else %}Создание нового сообщения{% endif %}
+                    </h4>
+                    <span class="badge bg-light text-info fs-6">
+                        {% if object %}ID: {{ object.id }}{% else %}Новое{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label for="{{ form.subject.id_for_label }}" class="form-label fs-6">
+                            <i class="fas fa-heading me-2 text-muted"></i>
+                            Тема письма
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form.subject }}
+                        {% if form.subject.errors %}
+                        <div class="alert alert-danger mt-2 py-2">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            {{ form.subject.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.body.id_for_label }}" class="form-label fs-6">
+                            <i class="fas fa-align-left me-2 text-muted"></i>
+                            Текст сообщения
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form.body }}
+                        {% if form.body.errors %}
+                        <div class="alert alert-danger mt-2 py-2">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            {{ form.body.errors.0 }}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Используйте четкую структуру и разбивайте текст на абзацы для лучшей читаемости
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <a href="{% url 'mailing:message_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Вернуться к списку
+                        </a>
+
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="fas fa-save me-2"></i>
+                                {% if object %}Сохранить изменения{% else %}Создать сообщение{% endif %}
+                            </button>
+                            {% if object %}
+                            <a href="{% url 'mailing:message_delete' object.pk %}" class="btn btn-outline-danger">
+                                <i class="fas fa-trash me-2"></i>
+                                Удалить
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,38 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center">
+        <h1 class="mb-4">Сервис управления рассылками</h1>
+        <p class="lead">Управляйте вашими email-рассылками эффективно и просто</p>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Всего рассылок</h5>
+                <h2 class="card-text">{{ total_mailings }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Активных пользователей</h5>
+                <h2 class="card-text">{{ active_users }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Уникальных получателей</h5>
+                <h2 class="card-text">{{ unique_clients }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
